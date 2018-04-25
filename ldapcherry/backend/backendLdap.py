@@ -403,7 +403,7 @@ class Backend(ldapcherry.backend.Backend):
         for attr in attrs:
             bcontent = self._str(attrs[attr])
             battr = self._str(attr)
-            new = {battr: bcontent}
+            new = {battr: [bcontent]}
             # if attr is dn entry, use rename
             if attr.lower() == self.dn_user_attr.lower():
                 ldap_client.rename_s(
@@ -429,6 +429,8 @@ class Backend(ldapcherry.backend.Backend):
                 else:
                     old = {}
                 ldif = modlist.modifyModlist(old, new)
+                if not ldif:
+                    continue
                 try:
                     ldap_client.modify_s(dn, ldif)
                 except Exception as e:
@@ -466,7 +468,9 @@ class Backend(ldapcherry.backend.Backend):
                             'backend': self.backend_name
                             }
                 )
-                ldif = modlist.modifyModlist({}, {attr: content})
+                ldif = modlist.modifyModlist({}, {attr: [content]})
+                if not ldif:
+                    continue
                 try:
                     ldap_client.modify_s(group, ldif)
                 # if already member, not a big deal, just log it and continue
