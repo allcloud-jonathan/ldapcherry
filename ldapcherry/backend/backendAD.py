@@ -111,8 +111,8 @@ class Backend(ldapcherry.backend.backendLdap.Backend):
         self.starttls = self.get_param('starttls', 'off')
         self.uri = self.get_param('uri')
         self.timeout = self.get_param('timeout', 1)
-        self.userdn = 'CN=Users,' + basedn
-        self.groupdn = self.userdn
+        self.userdn = self.get_param('userdn_base','CN=Users') + basedn
+        self.groupdn = self.get_param('groupdn_base','CN=Users') + basedn
         self.builtin = 'CN=Builtin,' + basedn
         self.user_filter_tmpl = '(sAMAccountName=%(username)s)'
         self.group_filter_tmpl = '(member=%(userdn)s)'
@@ -193,7 +193,6 @@ class Backend(ldapcherry.backend.backendLdap.Backend):
         attrs = {}
 
         attrs['unicodePwd'] = self._str(password_value)
-
         ldif = modlist.modifyModlist({'unicodePwd': 'tmp'}, attrs)
         ldap_client.modify_s(dn, ldif)
 
