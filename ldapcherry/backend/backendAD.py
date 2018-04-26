@@ -101,18 +101,18 @@ class Backend(ldapcherry.backend.backendLdap.Backend):
         self._logger = logger
         self.backend_name = name
         self.backend_display_name = self.get_param('display_name')
-        self.domain = self.get_param('domain')
-        self.login = self.get_param('login')
+        self.domain = os.getenv('LDAPCHERRY_AD_DOMAIN') or self.get_param('domain')
+        self.login = os.getenv('LDAPCHERRY_AD_BIND_USER_NAME') or self.get_param('login')
         basedn = 'dc=' + re.sub(r'\.', ',DC=', self.domain)
-        self.binddn = self.get_param('login') + '@' + self.domain
-        self.bindpassword = self.get_param('password')
-        self.ca = self.get_param('ca', False)
-        self.checkcert = self.get_param('checkcert', 'on')
-        self.starttls = self.get_param('starttls', 'off')
-        self.uri = self.get_param('uri')
+        self.binddn = self.login + '@' + self.domain
+        self.bindpassword = os.getenv('LDAPCHERRY_AD_BIND_USER_PASSWORD') or self.get_param('password')
+        self.ca = os.getenv('LDAPCHERRY_AD_LDAP_TLS_CA_CERT') or self.get_param('ca', False)
+        self.checkcert = os.getenv('LDAPCHERRY_AD_LDAP_TLS_CHECK_SERVER_CERT') or self.get_param('checkcert', 'on')
+        self.starttls = os.getenv('LDAPCHERRY_AD_LDAP_STARTTLS') or self.get_param('starttls', 'off')
+        self.uri = os.getenv('LDAPCHERRY_AD_LDAP_URI') or self.get_param('uri')
         self.timeout = self.get_param('timeout', 1)
-        self.userdn = self.get_param('userdn_base','CN=Users') + basedn
-        self.groupdn = self.get_param('groupdn_base','CN=Users') + basedn
+        self.userdn = os.getenv('LDAPCHERRY_AD_USERS_DN_BASE') or self.get_param('userdn_base','CN=Users') + basedn
+        self.groupdn = os.getenv('LDAPCHERRY_AD_GROUPS_DN_BASE') or self.get_param('groupdn_base','CN=Users') + basedn
         self.builtin = 'CN=Builtin,' + basedn
         self.user_filter_tmpl = '(sAMAccountName=%(username)s)'
         self.group_filter_tmpl = '(member=%(userdn)s)'
