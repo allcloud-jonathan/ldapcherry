@@ -111,8 +111,8 @@ class Backend(ldapcherry.backend.backendLdap.Backend):
         self.starttls = os.getenv('LDAPCHERRY_AD_LDAP_STARTTLS') or self.get_param('starttls', 'off')
         self.uri = os.getenv('LDAPCHERRY_AD_LDAP_URI') or self.get_param('uri')
         self.timeout = self.get_param('timeout', 1)
-        self.userdn = os.getenv('LDAPCHERRY_AD_USERS_DN_BASE') or self.get_param('userdn_base','CN=Users') + basedn
-        self.groupdn = os.getenv('LDAPCHERRY_AD_GROUPS_DN_BASE') or self.get_param('groupdn_base','CN=Users') + basedn
+        self.userdn = (os.getenv('LDAPCHERRY_AD_USERS_DN_BASE') or self.get_param('userdn_base','CN=Users')) + basedn
+        self.groupdn = (os.getenv('LDAPCHERRY_AD_GROUPS_DN_BASE') or self.get_param('groupdn_base','CN=Users')) + basedn
         self.builtin = 'CN=Builtin,' + basedn
         self.user_filter_tmpl = '(sAMAccountName=%(username)s)'
         self.group_filter_tmpl = '(member=%(userdn)s)'
