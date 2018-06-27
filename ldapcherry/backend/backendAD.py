@@ -197,7 +197,7 @@ class Backend(ldapcherry.backend.backendLdap.Backend):
             ldif = [ (2,'unicodePwd',[self._str(password_value)])]
             ldap_client.modify_s(dn, ldif)
 
-            del(attrs['unicodePwd'])
+            # del(attrs['unicodePwd'])
             attrs['UserAccountControl'] = [str(NORMAL_ACCOUNT)]
             ldif = modlist.modifyModlist({'UserAccountControl': 'tmp'}, attrs)
             ldap_client.modify_s(dn, ldif)
