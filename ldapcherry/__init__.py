@@ -735,10 +735,6 @@ class LdapCherry(object):
                 self._add_notification(
                     'User does not exist in backend "' + b + '"'
                     )
-            except PPolicyError:
-                self._add_notification(
-                    'Password does not match policy'
-                    )
 
         return badd
 
