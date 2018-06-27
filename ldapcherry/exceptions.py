@@ -254,7 +254,6 @@ def exception_decorator(func):
                     message="User '" + user + "' already exist"
                     )
             elif et is PPolicyError:
-                user = e.user
                 cherrypy.response.status = 400
                 return self.temp['error.tmpl'].render(
                     is_admin=is_admin,
