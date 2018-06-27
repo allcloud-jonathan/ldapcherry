@@ -158,7 +158,7 @@ class Backend(ldapcherry.backend.Backend):
         else:
             self._logger(
                 severity=logging.ERROR,
-                msg="unknown exception in backend " + self.backend_name,
+                msg="unknown exception in backend " + self.backend_name + ": " + e,
                 )
         raise
 
