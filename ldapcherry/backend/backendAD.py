@@ -192,12 +192,16 @@ class Backend(ldapcherry.backend.backendLdap.Backend):
 
         attrs = {}
         try:
-            # attrs['unicodePwd'] = [self._str(password_value)]
-            # ldif = modlist.modifyModlist({'unicodePwd': 'tmp'}, attrs)
-            ldif = [ (2,'unicodePwd',[self._str(password_value)])]
+            import pprint
+            attrs['unicodePwd'] = [self._str(password_value)]
+            ldif = modlist.modifyModlist({'unicodePwd': 'tmp'}, attrs)
+            pprint.pprint(ldif)
+            ldif = [ (ldap.MOD_REPLACE,'unicodePwd',[self._str(password_value)])]
+            pprint.pprint(ldif)
+
             ldap_client.modify_s(dn, ldif)
 
-            # del(attrs['unicodePwd'])
+            del(attrs['unicodePwd'])
             attrs['UserAccountControl'] = [str(NORMAL_ACCOUNT)]
             ldif = modlist.modifyModlist({'UserAccountControl': 'tmp'}, attrs)
             ldap_client.modify_s(dn, ldif)
