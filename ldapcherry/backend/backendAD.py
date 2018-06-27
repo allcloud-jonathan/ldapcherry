@@ -191,15 +191,18 @@ class Backend(ldapcherry.backend.backendLdap.Backend):
             dn = self._str(name)
 
         attrs = {}
+        try:
+            attrs['unicodePwd'] = [self._str(password_value)]
+            ldif = modlist.modifyModlist({'unicodePwd': 'tmp'}, attrs)
+            ldap_client.modify_s(dn, ldif)
 
-        attrs['unicodePwd'] = [self._str(password_value)]
-        ldif = modlist.modifyModlist({'unicodePwd': 'tmp'}, attrs)
-        ldap_client.modify_s(dn, ldif)
-
-        del(attrs['unicodePwd'])
-        attrs['UserAccountControl'] = [str(NORMAL_ACCOUNT)]
-        ldif = modlist.modifyModlist({'UserAccountControl': 'tmp'}, attrs)
-        ldap_client.modify_s(dn, ldif)
+            del(attrs['unicodePwd'])
+            attrs['UserAccountControl'] = [str(NORMAL_ACCOUNT)]
+            ldif = modlist.modifyModlist({'UserAccountControl': 'tmp'}, attrs)
+            ldap_client.modify_s(dn, ldif)
+        except Exception as e:
+            ldap_client.unbind_s()
+            self._exception_handler(e)
 
     def add_user(self, attrs):
         password = attrs['unicodePwd']
