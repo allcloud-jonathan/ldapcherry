@@ -192,15 +192,25 @@ class Backend(ldapcherry.backend.backendLdap.Backend):
 
         attrs = {}
         try:
-            import pprint
             attrs['unicodePwd'] = [self._str(password_value)]
             ldif = modlist.modifyModlist({'unicodePwd': 'tmp'}, attrs)
-            pprint.pprint(ldif)
-            ldif = [ (ldap.MOD_REPLACE,'unicodePwd',[self._str(password_value)])]
-            pprint.pprint(ldif)
-
             ldap_client.modify_s(dn, ldif)
+        except ldap.CONSTRAINT_VIOLATION as e:
+            self._exception_handler(e)
+            try:
+                ldif = [ (ldap.MOD_REPLACE,'unicodePwd',[self._str(password_value)])]
+                ldap_client.modify_s(dn, ldif)
+            except ldap.CONSTRAINT_VIOLATION as e:
+                self._exception_handler(e)
+                raise PPolicyError()
+            except Exception as e:
+                ldap_client.unbind_s()
+                self._exception_handler(e)
+        except Exception as e:
+            ldap_client.unbind_s()
+            self._exception_handler(e)
 
+        try:
             del(attrs['unicodePwd'])
             attrs['UserAccountControl'] = [str(NORMAL_ACCOUNT)]
             ldif = modlist.modifyModlist({'UserAccountControl': 'tmp'}, attrs)
