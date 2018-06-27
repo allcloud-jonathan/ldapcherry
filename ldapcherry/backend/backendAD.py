@@ -201,7 +201,8 @@ class Backend(ldapcherry.backend.backendLdap.Backend):
             attrs['UserAccountControl'] = [str(NORMAL_ACCOUNT)]
             ldif = modlist.modifyModlist({'UserAccountControl': 'tmp'}, attrs)
             ldap_client.modify_s(dn, ldif)
-        except ldap.CONSTRAINT_VIOLATION:
+        except ldap.CONSTRAINT_VIOLATION as e:
+            self._exception_handler(e)
             raise PPolicyError()
         except Exception as e:
             ldap_client.unbind_s()
