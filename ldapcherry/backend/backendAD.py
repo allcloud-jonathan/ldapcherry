@@ -12,7 +12,7 @@ import ldap.modlist as modlist
 import ldap.filter
 import logging
 import ldapcherry.backend
-from ldapcherry.exceptions import UserDoesntExist, GroupDoesntExist
+from ldapcherry.exceptions import UserDoesntExist, GroupDoesntExist, PPolicyError
 import os
 import re
 
@@ -200,6 +200,8 @@ class Backend(ldapcherry.backend.backendLdap.Backend):
             attrs['UserAccountControl'] = [str(NORMAL_ACCOUNT)]
             ldif = modlist.modifyModlist({'UserAccountControl': 'tmp'}, attrs)
             ldap_client.modify_s(dn, ldif)
+        except ldap.CONSTRAINT_VIOLATION:
+            raise PPolicyError()
         except Exception as e:
             ldap_client.unbind_s()
             self._exception_handler(e)
