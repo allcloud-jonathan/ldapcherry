@@ -258,7 +258,7 @@ def exception_decorator(func):
                 return self.temp['error.tmpl'].render(
                     is_admin=is_admin,
                     alert='danger',
-                    message="The password did pass the password policy"
+                    message="The password did not pass the password policy"
                     )
             elif et is GroupDoesntExist:
                 group = e.group
