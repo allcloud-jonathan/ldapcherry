@@ -158,8 +158,10 @@ class Backend(ldapcherry.backend.Backend):
         else:
             self._logger(
                 severity=logging.ERROR,
-                msg="unknown exception in backend " + self.backend_name + ": " + str(e),
+                msg="unknown exception in backend " + self.backend_name,
                 )
+            import pprint
+            pprint.pprint(e)
         raise
 
     def _extract_format_keys(self, fmt_string):
