@@ -134,6 +134,13 @@ class Backend(ldapcherry.backend.Backend):
                 severity=logging.ERROR,
                 msg="Configuration error, " + desc + ", " + info,
                 )
+        elif et is ldap.CONSTRAINT_VIOLATION:
+            info = e[0]['info']
+            desc = e[0]['desc']
+            self._logger(
+                severity=logging.ERROR,
+                msg="Violation a constraint, " + desc + ", " + info,
+                )
         elif et is ldap.INSUFFICIENT_ACCESS:
             self._logger(
                 severity=logging.ERROR,
