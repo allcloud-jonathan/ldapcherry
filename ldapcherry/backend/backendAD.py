@@ -192,7 +192,7 @@ class Backend(ldapcherry.backend.backendLdap.Backend):
             dn = self._str(name)
 
         attrs = {}
-        password_value = base64.b64encode(unicode_pass.encode('utf-16-le'))
+        # password_value = base64.b64encode(unicode_pass.encode('utf-16-le'))
 
         try:
             attrs['unicodePwd'] = [self._str(password_value)]
