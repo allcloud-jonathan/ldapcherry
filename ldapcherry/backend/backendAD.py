@@ -191,7 +191,6 @@ class Backend(ldapcherry.backend.backendLdap.Backend):
         else:
             dn = self._str(name)
 
-        # attrs = {}
         # password_value = base64.b64encode(unicode_pass.encode('utf-16-le'))
 
         try:
@@ -207,7 +206,8 @@ class Backend(ldapcherry.backend.backendLdap.Backend):
             self._exception_handler(e)
 
         try:
-            attrs = dict(['UserAccountControl',[str(NORMAL_ACCOUNT)]])
+            attrs = {}
+            attrs['UserAccountControl'] = [str(NORMAL_ACCOUNT)]
             ldif = modlist.modifyModlist({'UserAccountControl': 'tmp'}, attrs)
             ldap_client.modify_s(dn, ldif)
         except ldap.CONSTRAINT_VIOLATION as e:
