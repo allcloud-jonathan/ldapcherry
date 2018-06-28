@@ -194,15 +194,15 @@ class Backend(ldapcherry.backend.backendLdap.Backend):
         try:
             attrs['unicodePwd'] = [self._str(password_value)]
             ldif = modlist.modifyModlist({'unicodePwd': 'tmp'}, attrs)
-            logger.info("pw modify")
+            self._logger.info("pw modify")
             ldap_client.modify_s(dn, ldif)
-            logger.info("pw modify succeded")
+            self._logger.info("pw modify succeded")
         except ldap.CONSTRAINT_VIOLATION as e:
             try:
-                logger.info("pw replace")
+                self._logger.info("pw replace")
                 ldif = [ (ldap.MOD_REPLACE,'unicodePwd',[self._str(password_value)])]
                 ldap_client.modify_s(dn, ldif)
-                logger.info("pw replace succeded")
+                self._logger.info("pw replace succeded")
             except ldap.CONSTRAINT_VIOLATION as e:
                 raise PPolicyError()
             except Exception as e:
