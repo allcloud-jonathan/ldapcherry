@@ -15,6 +15,7 @@ import ldapcherry.backend
 from ldapcherry.exceptions import UserDoesntExist, GroupDoesntExist, PPolicyError
 import os
 import re
+import base64
 
 
 class CaFileDontExist(Exception):
