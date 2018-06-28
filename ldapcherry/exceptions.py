@@ -253,6 +253,13 @@ def exception_decorator(func):
                     alert='warning',
                     message="User '" + user + "' already exist"
                     )
+            elif et is PPolicyError:
+                cherrypy.response.status = 400
+                return self.temp['error.tmpl'].render(
+                    is_admin=is_admin,
+                    alert='danger',
+                    message="The password did not pass the password policy"
+                    )
             elif et is GroupDoesntExist:
                 group = e.group
                 return self.temp['error.tmpl'].render(

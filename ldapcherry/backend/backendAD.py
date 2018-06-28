@@ -12,7 +12,7 @@ import ldap.modlist as modlist
 import ldap.filter
 import logging
 import ldapcherry.backend
-from ldapcherry.exceptions import UserDoesntExist, GroupDoesntExist
+from ldapcherry.exceptions import UserDoesntExist, GroupDoesntExist, PPolicyError
 import os
 import re
 
@@ -190,16 +190,29 @@ class Backend(ldapcherry.backend.backendLdap.Backend):
         else:
             dn = self._str(name)
 
-        attrs = {}
+        try:
+            self._logger(severity=logging.INFO, msg="pw replace")
+            ldif = [ (ldap.MOD_REPLACE,'unicodePwd',[self._str(password_value)])]
+            print(ldif)
+            ldap_client.modify_s(dn, ldif)
+            self._logger(severity=logging.INFO, msg="pw replace succeded")
+        except ldap.UNWILLING_TO_PERFORM as e:
+            raise PPolicyError()
+        except Exception as e:
+            ldap_client.unbind_s()
+            self._exception_handler(e)
 
-        attrs['unicodePwd'] = [self._str(password_value)]
-        ldif = modlist.modifyModlist({'unicodePwd': 'tmp'}, attrs)
-        ldap_client.modify_s(dn, ldif)
-
-        del(attrs['unicodePwd'])
-        attrs['UserAccountControl'] = [str(NORMAL_ACCOUNT)]
-        ldif = modlist.modifyModlist({'UserAccountControl': 'tmp'}, attrs)
-        ldap_client.modify_s(dn, ldif)
+        try:
+            attrs = {}
+            attrs['UserAccountControl'] = [str(NORMAL_ACCOUNT)]
+            ldif = modlist.modifyModlist({'UserAccountControl': 'tmp'}, attrs)
+            ldap_client.modify_s(dn, ldif)
+        except ldap.CONSTRAINT_VIOLATION as e:
+            self._exception_handler(e)
+            raise PPolicyError()
+        except Exception as e:
+            ldap_client.unbind_s()
+            self._exception_handler(e)
 
     def add_user(self, attrs):
         password = attrs['unicodePwd']
