@@ -200,6 +200,7 @@ class Backend(ldapcherry.backend.backendLdap.Backend):
         except ldap.CONSTRAINT_VIOLATION as e:
             try:
                 self._logger(severity=logging.INFO, msg="pw replace")
+                password_value = base64.b64encode(unicode_pass.encode('utf-16-le'))
                 ldif = [ (ldap.MOD_REPLACE,'unicodePwd',[self._str(password_value)])]
                 print(ldif)
                 ldap_client.modify_s(dn, ldif)
