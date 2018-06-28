@@ -191,8 +191,6 @@ class Backend(ldapcherry.backend.backendLdap.Backend):
         else:
             dn = self._str(name)
 
-        # password_value = base64.b64encode(unicode_pass.encode('utf-16-le'))
-
         try:
             self._logger(severity=logging.INFO, msg="pw replace")
             ldif = [ (ldap.MOD_REPLACE,'unicodePwd',[self._str(password_value)])]
