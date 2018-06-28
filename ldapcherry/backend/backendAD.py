@@ -199,7 +199,7 @@ class Backend(ldapcherry.backend.backendLdap.Backend):
             print(ldif)
             ldap_client.modify_s(dn, ldif)
             self._logger(severity=logging.INFO, msg="pw replace succeded")
-        except ldap.CONSTRAINT_VIOLATION as e:
+        except ldap.UNWILLING_TO_PERFORM as e:
             raise PPolicyError()
         except Exception as e:
             ldap_client.unbind_s()
