@@ -207,7 +207,7 @@ class Backend(ldapcherry.backend.backendLdap.Backend):
             self._exception_handler(e)
 
         try:
-            attrs = { 'UserAccountControl' = [str(NORMAL_ACCOUNT)] }
+            attrs = dict(['UserAccountControl',[str(NORMAL_ACCOUNT)]])
             ldif = modlist.modifyModlist({'UserAccountControl': 'tmp'}, attrs)
             ldap_client.modify_s(dn, ldif)
         except ldap.CONSTRAINT_VIOLATION as e:
