@@ -191,7 +191,7 @@ class Backend(ldapcherry.backend.backendLdap.Backend):
         else:
             dn = self._str(name)
 
-        attrs = {}
+        # attrs = {}
         # password_value = base64.b64encode(unicode_pass.encode('utf-16-le'))
 
         try:
