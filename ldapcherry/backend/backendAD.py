@@ -192,6 +192,8 @@ class Backend(ldapcherry.backend.backendLdap.Backend):
             dn = self._str(name)
 
         attrs = {}
+        password_value = base64.b64encode(unicode_pass.encode('utf-16-le'))
+
         try:
             attrs['unicodePwd'] = [self._str(password_value)]
             ldif = modlist.modifyModlist({'unicodePwd': 'tmp'}, attrs)
@@ -201,7 +203,6 @@ class Backend(ldapcherry.backend.backendLdap.Backend):
         except ldap.CONSTRAINT_VIOLATION as e:
             try:
                 self._logger(severity=logging.INFO, msg="pw replace")
-                password_value = base64.b64encode(unicode_pass.encode('utf-16-le'))
                 ldif = [ (ldap.MOD_REPLACE,'unicodePwd',[self._str(password_value)])]
                 print(ldif)
                 ldap_client.modify_s(dn, ldif)
